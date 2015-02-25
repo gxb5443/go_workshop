@@ -8,12 +8,6 @@ import (
 	"time"
 )
 
-type Feed struct {
-	Title string
-	Link  string
-	Items []Item
-}
-
 type Item struct {
 	Title string
 	Link  string
@@ -21,10 +15,20 @@ type Item struct {
 	Taken time.Time `json:"date_taken"`
 }
 
+type Feed struct {
+	Title string
+	Link  string
+	Items []Item
+}
+
 func main() {
 	response, err := http.Get("http://api.flickr.com/services/feeds/photos_public.gne?format=json&tags=hockey&nojsoncallback=1")
 	if err != nil {
 		log.Fatal("HTTP GET: ", err)
+		return
+	}
+	if response.StatusCode != http.StatusOK {
+		log.Fatal("StatusCode: ", response.StatusCode)
 		return
 	}
 	defer response.Body.Close()
